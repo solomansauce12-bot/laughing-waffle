@@ -70,7 +70,41 @@
         </button>
       </div>
 
-      <div id="apps-grid" class="grid-3"></div>
+      <div id="apps-grid" class="grid-3" style="margin-bottom:1.5rem;"></div>
+
+      <!-- Credentials / Code Snippet panel -->
+      <div class="card" id="snippet-panel">
+        <div class="card-header" style="margin-bottom:.85rem;">
+          <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--blue-light);"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          <span class="card-title">Application Credentials</span>
+          <span class="text-muted text-xs" style="margin-left:.5rem;">Click an app card to load its credentials</span>
+          <div class="flex items-center gap-2" style="margin-left:auto;">
+            <span class="text-muted text-xs">Language:</span>
+            <div class="tab-bar">
+              <button class="tab-btn active" onclick="switchLang('cpp',this)">C++</button>
+              <button class="tab-btn" onclick="switchLang('csharp',this)">C#</button>
+              <button class="tab-btn" onclick="switchLang('python',this)">Python</button>
+              <button class="tab-btn" onclick="switchLang('vbnet',this)">VB.NET</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="snippet-no-app" class="empty-state" style="padding:2rem 1rem;">
+          <svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          <p>Select an application above to view its code snippet.</p>
+        </div>
+
+        <div id="snippet-content" class="hidden">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem;">
+            <span class="text-xs text-muted" id="snippet-app-label">No app selected</span>
+            <button class="btn btn-ghost btn-sm" onclick="copySnippet()">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy Code
+            </button>
+          </div>
+          <pre class="code-block" id="snippet-code" style="min-height:120px;"></pre>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -277,6 +311,89 @@ function createApp() {
   closeModal('modal-new-app');
   renderApps();
 }
+
+/* ── Snippets ── */
+let snippetLang = 'cpp';
+let snippetApp  = null;
+
+const SNIPPETS = {
+  cpp: app => `#include "larpauth.hpp"
+
+std::string appname    = "${app.name}";
+std::string ownerid    = "${app.id.slice(0,12)}";
+std::string secret     = "${app.secret}";
+std::string version    = "${app.version}";
+std::string url        = "https://larpauth.io/api/1.0/";
+
+int main() {
+    LarpAuth::init(appname, ownerid, secret, version, url);
+    LarpAuth::license("YOUR-LICENSE-KEY");
+}`,
+  csharp: app => `using LarpAuth;
+
+var api = new LarpAuthClient(
+    appName:  "${app.name}",
+    ownerId:  "${app.id.slice(0,12)}",
+    secret:   "${app.secret}",
+    version:  "${app.version}",
+    url:      "https://larpauth.io/api/1.0/"
+);
+
+api.Initialize();
+api.License("YOUR-LICENSE-KEY");`,
+  python: app => `from larpauth import LarpAuth
+
+api = LarpAuth(
+    app_name = "${app.name}",
+    owner_id = "${app.id.slice(0,12)}",
+    secret   = "${app.secret}",
+    version  = "${app.version}",
+    url      = "https://larpauth.io/api/1.0/"
+)
+
+api.initialize()
+api.license("YOUR-LICENSE-KEY")`,
+  vbnet: app => `Imports LarpAuth
+
+Dim api As New LarpAuthClient(
+    appName:="${app.name}",
+    ownerId:="${app.id.slice(0,12)}",
+    secret:="${app.secret}",
+    version:="${app.version}",
+    url:="https://larpauth.io/api/1.0/"
+)
+
+api.Initialize()
+api.License("YOUR-LICENSE-KEY")`,
+};
+
+function switchLang(lang, btn) {
+  snippetLang = lang;
+  btn.closest('.tab-bar').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (snippetApp) renderSnippet();
+}
+
+function renderSnippet() {
+  document.getElementById('snippet-no-app').classList.add('hidden');
+  document.getElementById('snippet-content').classList.remove('hidden');
+  document.getElementById('snippet-app-label').textContent = `${snippetApp.name} · v${snippetApp.version}`;
+  document.getElementById('snippet-code').textContent = SNIPPETS[snippetLang](snippetApp);
+}
+
+function copySnippet() {
+  copyText(document.getElementById('snippet-code').textContent, 'Code');
+}
+
+const _origOpenAppDetail = openAppDetail;
+openAppDetail = function(id) {
+  _origOpenAppDetail(id);
+  const apps = DB.get('la_apps', []);
+  snippetApp = apps.find(a => a.id === id) || null;
+  if (snippetApp) renderSnippet();
+  document.querySelectorAll('.app-card').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.app-card').forEach(c => { if (c.getAttribute('onclick')?.includes(id)) c.classList.add('selected'); });
+};
 
 document.addEventListener('DOMContentLoaded', renderApps);
 </script>
