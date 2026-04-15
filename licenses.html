@@ -284,7 +284,7 @@ function createLicense() {
   renderLicenses();
   /* Sync to Worker */
   const app = getSelectedApp();
-  if (app) workerSync({ type: 'push_license', name: app.name, secret: app.secret, key: newKey.key, maxUses: 1, note: '', expiry });
+  if (app) workerSync({ type: 'push_license', name: app.name, secret: app.secret, key: newKey.key, maxUses: 0, note: '', expiry });
 }
 
 function bulkGenerate() {
@@ -301,7 +301,7 @@ function bulkGenerate() {
     const k = genLicenseKey('LARP');
     keys.push(k);
     licenses.push({ id: uuidv4(), key: k, appId: selectedAppId, level, used: false, username: '', ip: '', created: new Date().toISOString().slice(0,10), expires: exp });
-    if (app) workerSync({ type: 'push_license', name: app.name, secret: app.secret, key: k, maxUses: 1, note: '', expiry });
+    if (app) workerSync({ type: 'push_license', name: app.name, secret: app.secret, key: k, maxUses: 0, note: '', expiry });
   }
   DB.set('la_licenses', licenses);
   document.getElementById('bulk-output').value = keys.join('\n');
