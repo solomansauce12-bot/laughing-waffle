@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>LarpAuth — Licenses</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <span class="js-shield"></span>
+      <span class="sidebar-logo-text">Larp<span>Auth</span></span>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Overview</div>
+      <a class="nav-item" data-page="dashboard.html" href="dashboard.html">
+        <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Management</div>
+      <a class="nav-item" data-page="applications.html" href="applications.html">
+        <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        Applications
+      </a>
+      <a class="nav-item" data-page="licenses.html" href="licenses.html">
+        <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 7h3a5 5 0 0 1 0 10h-3m-6 0H6A5 5 0 0 1 6 7h3"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        Licenses
+      </a>
+      <a class="nav-item" data-page="users.html" href="users.html">
+        <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Users
+      </a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Account</div>
+      <a class="nav-item" data-page="settings.html" href="settings.html">
+        <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </a>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="user-chip">
+        <div class="user-avatar js-owner-initials">A</div>
+        <div><div class="name js-owner-name">Admin</div><div class="role">Owner</div></div>
+        <svg onclick="logout()" title="Logout" style="margin-left:auto;cursor:pointer;color:var(--text-muted);" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <button id="sidebar-toggle" class="btn btn-icon btn-ghost" style="display:none">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <span class="topbar-title">Licenses</span>
+    </header>
+
+    <div class="page-content">
+      <div class="page-header">
+        <div><h1>License Keys</h1><p>Generate and manage license keys for your applications.</p></div>
+        <div style="margin-left:auto;display:flex;gap:.75rem;">
+          <button class="btn btn-ghost" onclick="openModal('modal-bulk')">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Bulk Generate
+          </button>
+          <button class="btn btn-primary" onclick="openModal('modal-new-license')">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Generate Key
+          </button>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="flex gap-3 mb-4" style="flex-wrap:wrap;">
+        <div class="search-bar" style="flex:1;min-width:200px;">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="lic-search" class="input" placeholder="Search keys, usernames…" oninput="renderLicenses()"/>
+        </div>
+        <select id="lic-filter" class="select" style="width:150px;" onchange="renderLicenses()">
+          <option value="">All Keys</option>
+          <option value="used">Used</option>
+          <option value="unused">Unused</option>
+        </select>
+      </div>
+
+      <div class="card" style="padding:0;">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>License Key</th><th>Level</th><th>Status</th><th>Bound User</th><th>IP Address</th><th>Expires</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="lic-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- New license modal -->
+<div class="modal-overlay" id="modal-new-license">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-header">
+      <span class="modal-title">Generate License Key</span>
+      <button class="modal-close" data-close-modal="modal-new-license">✕</button>
+    </div>
+    <div class="form-group">
+      <label>Level</label>
+      <select id="nl-level" class="select">
+        <option value="1">Level 1</option>
+        <option value="2">Level 2</option>
+        <option value="3">Level 3</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Expiry (days from now)</label>
+      <input id="nl-days" class="input" type="number" value="365" min="1"/>
+    </div>
+    <div class="form-group">
+      <label>Custom Key Prefix (optional)</label>
+      <input id="nl-prefix" class="input" placeholder="LARP"/>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" data-close-modal="modal-new-license">Cancel</button>
+      <button class="btn btn-primary" onclick="createLicense()">Generate</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bulk generate modal -->
+<div class="modal-overlay" id="modal-bulk">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-header">
+      <span class="modal-title">Bulk Generate Keys</span>
+      <button class="modal-close" data-close-modal="modal-bulk">✕</button>
+    </div>
+    <div class="form-group"><label>Number of Keys</label><input id="bulk-count" class="input" type="number" value="10" min="1" max="500"/></div>
+    <div class="form-group">
+      <label>Level</label>
+      <select id="bulk-level" class="select">
+        <option value="1">Level 1</option>
+        <option value="2">Level 2</option>
+        <option value="3">Level 3</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Expiry (days)</label><input id="bulk-days" class="input" type="number" value="365" min="1"/></div>
+    <div id="bulk-result" class="hidden">
+      <label>Generated Keys</label>
+      <textarea id="bulk-output" class="input" style="height:140px;resize:none;" readonly></textarea>
+      <button class="btn btn-ghost btn-sm mt-2" onclick="copyText(document.getElementById('bulk-output').value,'Keys')">Copy All</button>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" data-close-modal="modal-bulk">Close</button>
+      <button class="btn btn-primary" onclick="bulkGenerate()">Generate</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="app.js"></script>
+<script>
+function logout() { DB.del('la_authed'); window.location.href = 'login.html'; }
+
+function renderLicenses() {
+  const licenses = DB.get('la_licenses', []);
+  const search   = document.getElementById('lic-search').value.toLowerCase();
+  const filter   = document.getElementById('lic-filter').value;
+  const tbody    = document.getElementById('lic-tbody');
+
+  let rows = licenses;
+  if (search) rows = rows.filter(l => l.key.toLowerCase().includes(search) || (l.username || '').toLowerCase().includes(search));
+  if (filter === 'used')   rows = rows.filter(l => l.used);
+  if (filter === 'unused') rows = rows.filter(l => !l.used);
+
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="7" class="text-muted text-sm" style="padding:1.5rem;text-align:center;">No licenses found.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = rows.map(l => `
+    <tr>
+      <td>
+        <div class="flex items-center gap-2">
+          <code style="font-size:.78rem;color:#93c5fd;">${l.key}</code>
+          <button class="btn btn-ghost btn-sm btn-icon" onclick="copyText('${l.key}','Key')" title="Copy">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+        </div>
+      </td>
+      <td><span class="badge badge-blue">Lvl ${l.level}</span></td>
+      <td>${l.used ? '<span class="badge badge-green">Used</span>' : '<span class="badge badge-gray">Unused</span>'}</td>
+      <td>${l.username ? `<span class="text-sm">${l.username}</span>` : '<span class="text-muted text-sm">—</span>'}</td>
+      <td class="text-dim text-sm">${l.ip || '—'}</td>
+      <td class="text-dim text-sm">${fmtDateShort(l.expires)}</td>
+      <td>
+        <div class="flex gap-2">
+          ${l.used ? `<button class="btn btn-ghost btn-sm" onclick="resetLicense('${l.id}')">Reset</button>` : ''}
+          <button class="btn btn-danger btn-sm" onclick="deleteLicense('${l.id}')">Delete</button>
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+function createLicense() {
+  const level  = parseInt(document.getElementById('nl-level').value);
+  const days   = parseInt(document.getElementById('nl-days').value) || 365;
+  const prefix = document.getElementById('nl-prefix').value.trim() || 'LARP';
+  const exp    = new Date(Date.now() + days * 864e5).toISOString().slice(0,10);
+  const licenses = DB.get('la_licenses', []);
+  const newKey = { id: uuidv4(), key: genLicenseKey(prefix), appId: '', level, used: false, username: '', ip: '', created: new Date().toISOString().slice(0,10), expires: exp };
+  licenses.push(newKey);
+  DB.set('la_licenses', licenses);
+  toast('License key generated', 'success');
+  closeModal('modal-new-license');
+  renderLicenses();
+}
+
+function bulkGenerate() {
+  const count  = Math.min(parseInt(document.getElementById('bulk-count').value) || 10, 500);
+  const level  = parseInt(document.getElementById('bulk-level').value);
+  const days   = parseInt(document.getElementById('bulk-days').value) || 365;
+  const exp    = new Date(Date.now() + days * 864e5).toISOString().slice(0,10);
+  const licenses = DB.get('la_licenses', []);
+  const keys = [];
+  for (let i = 0; i < count; i++) {
+    const k = genLicenseKey('LARP');
+    keys.push(k);
+    licenses.push({ id: uuidv4(), key: k, appId: '', level, used: false, username: '', ip: '', created: new Date().toISOString().slice(0,10), expires: exp });
+  }
+  DB.set('la_licenses', licenses);
+  document.getElementById('bulk-output').value = keys.join('\n');
+  document.getElementById('bulk-result').classList.remove('hidden');
+  toast(`${count} keys generated`, 'success');
+  renderLicenses();
+}
+
+function resetLicense(id) {
+  const licenses = DB.get('la_licenses', []);
+  const idx = licenses.findIndex(l => l.id === id);
+  if (idx < 0) return;
+  licenses[idx].used = false; licenses[idx].username = ''; licenses[idx].ip = '';
+  DB.set('la_licenses', licenses);
+  toast('License reset', 'success');
+  renderLicenses();
+}
+
+function deleteLicense(id) {
+  if (!confirm('Delete this license key?')) return;
+  DB.set('la_licenses', DB.get('la_licenses', []).filter(l => l.id !== id));
+  toast('License deleted', 'success');
+  renderLicenses();
+}
+
+document.addEventListener('DOMContentLoaded', renderLicenses);
+</script>
+</body>
+</html>

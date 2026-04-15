@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Next.js / build artifacts
+.next/
+out/
+build/
+coverage/
+
+# Environment & secrets
+.env
+.env.*
+
+# Next.js config leftovers
+next-env.d.ts
+*.tsbuildinfo
+/app/generated/prisma
+prisma.config.ts
+
+# Package manager logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+package-lock.json
+
+# Misc
+.DS_Store
+*.pem
+.vercel
+.vs/
+
+# AI agent notes (not needed in repo)
+AGENTS.md
+CLAUDE.md
+
+# Visual Studio
+.vs/
+*.slnx
+*.sln

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>LarpAuth — Login</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<div class="auth-bg">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <span class="js-shield-lg"></span>
+      <span class="auth-logo-text">Larp<span>Auth</span></span>
+    </div>
+
+    <div id="view-login">
+      <h2 style="font-size:1.15rem;font-weight:700;margin-bottom:.25rem;">Welcome back</h2>
+      <p class="text-muted text-sm mb-4">Sign in to your dashboard</p>
+
+      <div class="form-group">
+        <label for="login-user">Username or Email</label>
+        <div class="input-icon-wrap">
+          <svg class="icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <input id="login-user" class="input" type="text" placeholder="admin" autocomplete="username"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="login-pass">Password</label>
+        <div class="input-icon-wrap">
+          <svg class="icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input id="login-pass" class="input" type="password" placeholder="••••••••" autocomplete="current-password"/>
+        </div>
+      </div>
+
+      <button class="btn btn-primary w-full mt-2" onclick="doLogin()" style="justify-content:center;padding:.65rem;">
+        Sign In
+      </button>
+
+      <div class="auth-divider">or</div>
+      <p class="text-sm text-center text-dim">
+        No account? <a href="#" onclick="switchView('register')">Create one</a>
+      </p>
+    </div>
+
+    <div id="view-register" class="hidden">
+      <h2 style="font-size:1.15rem;font-weight:700;margin-bottom:.25rem;">Create account</h2>
+      <p class="text-muted text-sm mb-4">Set up your LarpAuth owner account</p>
+
+      <div class="form-group">
+        <label>Owner Name</label>
+        <input id="reg-name" class="input" type="text" placeholder="Admin"/>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input id="reg-email" class="input" type="email" placeholder="you@example.com"/>
+      </div>
+      <div class="form-group">
+        <label>Username</label>
+        <input id="reg-user" class="input" type="text" placeholder="admin"/>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input id="reg-pass" class="input" type="password" placeholder="••••••••"/>
+      </div>
+
+      <button class="btn btn-primary w-full mt-2" onclick="doRegister()" style="justify-content:center;padding:.65rem;">
+        Create Account
+      </button>
+      <div class="auth-divider">or</div>
+      <p class="text-sm text-center text-dim">
+        Already have an account? <a href="#" onclick="switchView('login')">Sign in</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+function switchView(v) {
+  document.getElementById('view-login').classList.toggle('hidden', v !== 'login');
+  document.getElementById('view-register').classList.toggle('hidden', v !== 'register');
+}
+
+function doLogin() {
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value;
+  if (!u || !p) { toast('Please fill in all fields', 'error'); return; }
+  const saved = DB.get('la_account');
+  if (saved && (saved.username === u || saved.email === u) && saved.password === p) {
+    DB.set('la_authed', true);
+    toast('Welcome back!', 'success');
+    setTimeout(() => window.location.href = 'dashboard.html', 600);
+  } else if (!saved && (u === 'admin' || u === 'admin@larpauth.io') && p === 'admin') {
+    DB.set('la_authed', true);
+    toast('Welcome back!', 'success');
+    setTimeout(() => window.location.href = 'dashboard.html', 600);
+  } else {
+    toast('Invalid credentials', 'error');
+  }
+}
+
+function doRegister() {
+  const name  = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const user  = document.getElementById('reg-user').value.trim();
+  const pass  = document.getElementById('reg-pass').value;
+  if (!name || !email || !user || !pass) { toast('Please fill in all fields', 'error'); return; }
+  DB.set('la_account', { ownerName: name, email, username: user, password: pass });
+  const s = DB.get('la_settings') || {};
+  DB.set('la_settings', { ...s, ownerName: name, email });
+  DB.set('la_authed', true);
+  toast('Account created!', 'success');
+  setTimeout(() => window.location.href = 'dashboard.html', 600);
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Enter') { const vl = !document.getElementById('view-login').classList.contains('hidden'); vl ? doLogin() : doRegister(); } });
+</script>
+</body>
+</html>
