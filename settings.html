@@ -141,6 +141,23 @@
         <button class="btn btn-primary btn-sm" onclick="saveWebhook()">Save Webhook</button>
       </div>
 
+      <!-- Cloudflare Worker -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <span class="card-title">Cloudflare Worker (Loader API)</span>
+        </div>
+        <div class="form-group">
+          <label>Worker URL</label>
+          <input id="s-worker-url" class="input" type="url" placeholder="https://larpauth.YOUR-SUBDOMAIN.workers.dev"/>
+          <p class="text-muted text-xs mt-1">Paste your deployed Worker URL here. The loader will validate keys/users against it.</p>
+        </div>
+        <div class="flex gap-2 mt-2">
+          <button class="btn btn-primary btn-sm" onclick="saveWorkerUrl()">Save URL</button>
+          <button class="btn btn-ghost btn-sm" onclick="testWorkerUrl()">Test Connection</button>
+        </div>
+      </div>
+
       <!-- Danger zone -->
       <div class="danger-zone">
         <div class="danger-zone-title">⚠ Danger Zone</div>
@@ -167,6 +184,35 @@ function loadSettings() {
   document.getElementById('s-seller-key').value = s.sellerKey || '';
   document.getElementById('s-webhook').value    = s.webhookUrl|| '';
   document.getElementById('s-2fa').checked      = s.twofa    || false;
+  document.getElementById('s-worker-url').value = localStorage.getItem('la_worker_url') || '';
+}
+
+function saveWorkerUrl() {
+  const url = document.getElementById('s-worker-url').value.trim();
+  if (url) {
+    localStorage.setItem('la_worker_url', url);
+    toast('Worker URL saved — reload to activate', 'success');
+  } else {
+    localStorage.removeItem('la_worker_url');
+    toast('Worker URL cleared', 'info');
+  }
+}
+
+async function testWorkerUrl() {
+  const url = document.getElementById('s-worker-url').value.trim();
+  if (!url) { toast('Enter a Worker URL first', 'error'); return; }
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'init', name: 'test', secret: 'test' }),
+    });
+    const json = await res.json();
+    if (json.message) toast('Worker reachable: ' + json.message, 'success');
+    else toast('Worker responded but no message', 'info');
+  } catch (e) {
+    toast('Could not reach Worker: ' + e.message, 'error');
+  }
 }
 
 function saveProfile() {

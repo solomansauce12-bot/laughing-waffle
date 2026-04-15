@@ -5,6 +5,7 @@
  */
 
 #define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
 #include <Windows.h>
 #include <iostream>
 #include <string>
@@ -17,12 +18,15 @@ using namespace LarpAuth;
 
 /* ── Paste your credentials from the Applications > Credentials panel ──────
    Leave version as "1.0" unless you changed it in the dashboard.           */
-std::string app_name  = skCrypt("YOUR_APP_NAME").decrypt();
-std::string owner_id  = skCrypt("YOUR_OWNER_ID").decrypt();
-std::string app_secret= skCrypt("YOUR_APP_SECRET").decrypt();
-std::string app_ver   = skCrypt("1.0").decrypt();
+std::string app_name   = skCrypt("Loader").decrypt();
+std::string owner_id   = skCrypt("0cb8b469-846").decrypt();
+std::string app_secret = skCrypt("d8da8a11-3c72-4792-a9d1-fe0d3c9c0739").decrypt();
+std::string app_ver    = skCrypt("1.0").decrypt();
 
-api LarpAuthApp(app_name, owner_id, app_secret, app_ver);
+/* ── Paste your Cloudflare Worker URL here ── */
+std::string worker_url = skCrypt("https://YOUR-WORKER.workers.dev").decrypt();
+
+api LarpAuthApp(app_name, owner_id, app_secret, app_ver, worker_url);
 lockout_state login_guard{};
 
 /* ── Helpers ─────────────────────────────────────────────────────────────── */

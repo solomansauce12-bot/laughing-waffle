@@ -43,6 +43,25 @@ function genLicenseKey(prefix = 'LARP') {
   return `${prefix}-${seg()}-${seg()}-${seg()}-${seg()}`;
 }
 
+/* ── Cloudflare Worker URL ── (set this after deploying your Worker) */
+const WORKER_URL = localStorage.getItem('la_worker_url') || '';
+
+/* ── Worker API sync helper ── */
+async function workerSync(payload) {
+  if (!WORKER_URL) return { ok: false, skipped: true };
+  try {
+    const res = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    return await res.json();
+  } catch (e) {
+    console.warn('Worker sync failed:', e);
+    return { ok: false, error: String(e) };
+  }
+}
+
 /* ── LocalStorage helpers ── */
 const DB = {
   get: (k, fallback = null) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : fallback; } catch { return fallback; } },

@@ -7,6 +7,7 @@
  */
 
 #define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
 #include <Windows.h>
 #include <winhttp.h>
 #include <string>
@@ -202,9 +203,11 @@ namespace LarpAuth
             std::string message;
         } response;
 
-        api(std::string name, std::string ownerid, std::string secret, std::string version)
+        std::string worker_url; /* Set this to your Cloudflare Worker URL before calling init() */
+
+        api(std::string name, std::string ownerid, std::string secret, std::string version, std::string worker_url = "")
             : name(std::move(name)), ownerid(std::move(ownerid)),
-              secret(std::move(secret)), version(std::move(version)) {}
+              secret(std::move(secret)), version(std::move(version)), worker_url(std::move(worker_url)) {}
 
         /* ── Initialize: verify app exists and is active ── */
         void init()
@@ -291,30 +294,32 @@ namespace LarpAuth
         }
 
     private:
-        /* POST to LarpAuth API endpoint — replace with your real backend URL */
+        /* POST JSON body to the Cloudflare Worker URL */
         std::string request(const std::string& body)
         {
-            // Replace with your actual API host and path if you host a backend.
-            // For the static GitHub Pages demo, responses are simulated locally.
-            return simulate_response(body);
-        }
+            if (worker_url.empty())
+                return R"({"success":false,"message":"Worker URL not set. Call app.worker_url = \"https://...\"; before init()."})";
 
-        /* ── Local simulation (since the dashboard is static HTML/localStorage) ──
-         * In a real deployment replace request() to hit a live backend.
-         * This lets you build and test the loader against the dashboard logic.     */
-        std::string simulate_response(const std::string& body)
-        {
-            std::string type = json_get(body, "type");
+            /* Parse host and path from worker_url */
+            std::string url = worker_url;
+            /* strip https:// */
+            if (url.substr(0, 8) == "https://") url = url.substr(8);
+            else if (url.substr(0, 7) == "http://") url = url.substr(7);
 
-            if (type == "init")
-                return R"({"success":true,"message":"Application initialized successfully."})";
+            std::string host, path;
+            size_t slash = url.find('/');
+            if (slash == std::string::npos) {
+                host = url;
+                path = "/";
+            } else {
+                host = url.substr(0, slash);
+                path = url.substr(slash);
+            }
 
-            if (type == "license" || type == "login" || type == "register")
-                return
-                    R"({"success":true,"message":"Authenticated.","username":"user","ip":"127.0.0.1",)"
-                    R"("createdate":"1700000000","lastlogin":"1700000000","subscription":"default","expiry":"9999999999"})";
+            std::wstring whost(host.begin(), host.end());
+            std::wstring wpath(path.begin(), path.end());
 
-            return R"({"success":false,"message":"Unknown request type."})";
+            return http_post(whost, wpath, body);
         }
 
         void fill_user(const std::string& resp, const std::string& username, const std::string& hwid)
