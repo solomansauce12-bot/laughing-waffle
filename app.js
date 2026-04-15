@@ -50,35 +50,44 @@ const DB = {
   del: (k)    => localStorage.removeItem(k),
 };
 
-/* ── Seed demo data ── */
+/* ── Owner account (hardcoded, always exists) ── */
+const OWNER = { username: 'PeachAppleDemon', password: 'Admin', role: 'owner' };
+
+/* ── Init fresh data (no seed demo data) ── */
 function seedData() {
-  if (!DB.get('la_seeded')) {
-    DB.set('la_apps', [
-      { id: uuidv4(), name: 'MyApp Pro', version: '1.0.0', status: 'active', secret: uuidv4(), users: 14, licenses: 22, created: '2025-03-10' },
-      { id: uuidv4(), name: 'Loader v2', version: '2.1.0', status: 'active', secret: uuidv4(), users: 7,  licenses: 9,  created: '2025-04-01' },
-    ]);
-    DB.set('la_licenses', [
-      { id: uuidv4(), key: genLicenseKey(), appId: '', level: 1, used: true,  username: 'darkstar',   ip: '192.168.1.5',  created: '2025-03-10', expires: '2026-03-10' },
-      { id: uuidv4(), key: genLicenseKey(), appId: '', level: 1, used: true,  username: 'xploit99',   ip: '10.0.0.42',    created: '2025-03-12', expires: '2026-03-12' },
-      { id: uuidv4(), key: genLicenseKey(), appId: '', level: 2, used: false, username: '',           ip: '',             created: '2025-04-01', expires: '2026-04-01' },
-      { id: uuidv4(), key: genLicenseKey(), appId: '', level: 1, used: true,  username: 'n0v4',       ip: '172.16.0.8',   created: '2025-04-03', expires: '2026-04-03' },
-    ]);
-    DB.set('la_users', [
-      { id: uuidv4(), username: 'darkstar', email: 'dark@example.com', ip: '192.168.1.5',  level: 1, banned: false, created: '2025-03-10', lastSeen: '2025-04-14', hwid: uuidv4() },
-      { id: uuidv4(), username: 'xploit99', email: 'x@example.com',    ip: '10.0.0.42',    level: 1, banned: false, created: '2025-03-12', lastSeen: '2025-04-12', hwid: uuidv4() },
-      { id: uuidv4(), username: 'n0v4',     email: 'nova@example.com', ip: '172.16.0.8',   level: 2, banned: false, created: '2025-04-03', lastSeen: '2025-04-13', hwid: uuidv4() },
-      { id: uuidv4(), username: 'ghost',    email: 'g@example.com',    ip: '10.10.1.1',    level: 1, banned: true,  created: '2025-01-05', lastSeen: '2025-02-20', hwid: uuidv4() },
-    ]);
-    DB.set('la_logs', [
-      { id: uuidv4(), action: 'Login',          username: 'darkstar', ip: '192.168.1.5', app: 'MyApp Pro', ts: new Date(Date.now()-3600000).toISOString(),  ok: true  },
-      { id: uuidv4(), action: 'License Check',  username: 'xploit99', ip: '10.0.0.42',  app: 'MyApp Pro', ts: new Date(Date.now()-7200000).toISOString(),  ok: true  },
-      { id: uuidv4(), action: 'Login',          username: 'ghost',    ip: '10.10.1.1',  app: 'Loader v2', ts: new Date(Date.now()-10800000).toISOString(), ok: false },
-      { id: uuidv4(), action: 'Register',       username: 'n0v4',     ip: '172.16.0.8', app: 'MyApp Pro', ts: new Date(Date.now()-14400000).toISOString(), ok: true  },
-    ]);
-    DB.set('la_settings', { ownerName: 'Admin', email: 'admin@larpauth.io', sellerKey: genLicenseKey('SK'), twofa: false, webhookUrl: '' });
-    DB.set('la_seeded', true);
+  DB.del('la_seeded'); /* clear old seed flag from previous version */
+  if (!DB.get('la_inited')) {
+    DB.set('la_apps',     []);
+    DB.set('la_licenses', []);
+    DB.set('la_users',    []);
+    DB.set('la_logs',     []);
+    DB.set('la_invites',  []);
+    DB.set('la_settings', { ownerName: 'PeachAppleDemon', email: '', sellerKey: genLicenseKey('SK'), twofa: false, webhookUrl: '' });
+    DB.set('la_inited', true);
   }
 }
+
+/* ── Invite code helpers ── */
+function validateInvite(code) {
+  const invites = DB.get('la_invites', []);
+  const inv = invites.find(i => i.code === code.trim().toUpperCase());
+  if (!inv) return { ok: false, msg: 'Invalid invite code.' };
+  if (!inv.active) return { ok: false, msg: 'This invite code has been disabled.' };
+  if (inv.maxUses > 0 && inv.uses >= inv.maxUses) return { ok: false, msg: 'This invite code has reached its usage limit.' };
+  return { ok: true, inv };
+}
+
+function redeemInvite(code) {
+  const invites = DB.get('la_invites', []);
+  const idx = invites.findIndex(i => i.code === code.trim().toUpperCase());
+  if (idx < 0) return;
+  invites[idx].uses = (invites[idx].uses || 0) + 1;
+  if (invites[idx].maxUses > 0 && invites[idx].uses >= invites[idx].maxUses) invites[idx].active = false;
+  DB.set('la_invites', invites);
+}
+
+/* ── Check if current session is owner ── */
+function isOwner() { return DB.get('la_role') === 'owner'; }
 
 /* ── Sidebar active nav ── */
 function setActiveNav() {
@@ -105,12 +114,16 @@ function fmtDateShort(iso) {
   return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
-/* ── Auth guard (simple) ── */
+/* ── Auth guard ── */
 function requireAuth() {
-  const pages = ['dashboard.html','applications.html','licenses.html','users.html','settings.html'];
+  const authPages  = ['dashboard.html','applications.html','licenses.html','users.html','settings.html','invites.html'];
+  const ownerPages = ['invites.html'];
   const page = window.location.pathname.split('/').pop();
-  if (pages.includes(page) && !DB.get('la_authed')) {
-    window.location.href = 'login.html';
+  if (authPages.includes(page) && !DB.get('la_authed')) {
+    window.location.href = 'login.html'; return;
+  }
+  if (ownerPages.includes(page) && !isOwner()) {
+    window.location.href = 'dashboard.html';
   }
 }
 
@@ -146,8 +159,14 @@ document.addEventListener('DOMContentLoaded', () => {
   setActiveNav();
   initSidebarToggle();
   const user = DB.get('la_settings');
-  document.querySelectorAll('.js-owner-name').forEach(el => { if (el) el.textContent = user?.ownerName || 'Admin'; });
-  document.querySelectorAll('.js-owner-initials').forEach(el => { if (el) el.textContent = (user?.ownerName || 'A')[0].toUpperCase(); });
+  const name = isOwner() ? OWNER.username : (user?.ownerName || 'User');
+  document.querySelectorAll('.js-owner-name').forEach(el => { if (el) el.textContent = name; });
+  document.querySelectorAll('.js-owner-initials').forEach(el => { if (el) el.textContent = name[0].toUpperCase(); });
+  document.querySelectorAll('.js-role-label').forEach(el => { if (el) el.textContent = isOwner() ? 'Owner' : 'Member'; });
   document.querySelectorAll('.js-shield').forEach(el => { el.innerHTML = SHIELD_SVG; });
   document.querySelectorAll('.js-shield-lg').forEach(el => { el.innerHTML = SHIELD_SVG_LG; });
+  /* Show invite nav only for owner */
+  document.querySelectorAll('.nav-owner-only').forEach(el => {
+    el.style.display = isOwner() ? '' : 'none';
+  });
 });

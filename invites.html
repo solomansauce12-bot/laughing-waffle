@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>LarpAuth — Invite Codes</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <span class="js-shield"></span>
+      <span class="sidebar-logo-text">Larp<span>Auth</span></span>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Overview</div>
+      <a class="nav-item" data-page="dashboard.html" href="dashboard.html">
+        <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Management</div>
+      <a class="nav-item" data-page="applications.html" href="applications.html">
+        <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        Applications
+      </a>
+      <a class="nav-item" data-page="licenses.html" href="licenses.html">
+        <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 7h3a5 5 0 0 1 0 10h-3m-6 0H6A5 5 0 0 1 6 7h3"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        Licenses
+      </a>
+      <a class="nav-item" data-page="users.html" href="users.html">
+        <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Users
+      </a>
+      <a class="nav-item nav-owner-only" data-page="invites.html" href="invites.html">
+        <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+        Invite Codes
+      </a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Account</div>
+      <a class="nav-item" data-page="settings.html" href="settings.html">
+        <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </a>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="user-chip">
+        <div class="user-avatar js-owner-initials">P</div>
+        <div><div class="name js-owner-name">PeachAppleDemon</div><div class="role js-role-label">Owner</div></div>
+        <svg onclick="logout()" title="Logout" style="margin-left:auto;cursor:pointer;color:var(--text-muted);" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <button id="sidebar-toggle" class="btn btn-icon btn-ghost" style="display:none">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <span class="topbar-title">Invite Codes</span>
+    </header>
+
+    <div class="page-content">
+      <div class="page-header">
+        <div>
+          <h1>Invite Codes</h1>
+          <p>Generate invite codes for people you want to allow to register.</p>
+        </div>
+        <button class="btn btn-primary" style="margin-left:auto;" onclick="openModal('modal-new-invite')">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Generate Invite
+        </button>
+      </div>
+
+      <!-- Stats row -->
+      <div class="grid-4 mb-4">
+        <div class="stat-card">
+          <div class="stat-icon" style="background:rgba(37,99,235,.12);color:var(--blue-light);">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+          </div>
+          <div class="stat-value" id="stat-total">0</div>
+          <div class="stat-label">Total Codes</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:rgba(16,185,129,.12);color:var(--success);">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="stat-value" id="stat-active">0</div>
+          <div class="stat-label">Active</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:rgba(245,158,11,.12);color:var(--warning);">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          </div>
+          <div class="stat-value" id="stat-uses">0</div>
+          <div class="stat-label">Total Uses</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:rgba(239,68,68,.12);color:var(--danger);">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+          </div>
+          <div class="stat-value" id="stat-disabled">0</div>
+          <div class="stat-label">Disabled</div>
+        </div>
+      </div>
+
+      <!-- Filter bar -->
+      <div class="flex gap-3 mb-4" style="flex-wrap:wrap;">
+        <div class="search-bar" style="flex:1;min-width:200px;">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="inv-search" class="input" placeholder="Search codes or notes…" oninput="renderInvites()"/>
+        </div>
+        <select id="inv-filter" class="select" style="width:150px;" onchange="renderInvites()">
+          <option value="">All</option>
+          <option value="active">Active</option>
+          <option value="disabled">Disabled</option>
+        </select>
+      </div>
+
+      <div class="card" style="padding:0;">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Note</th>
+                <th>Uses</th>
+                <th>Max Uses</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="inv-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Generate invite modal -->
+<div class="modal-overlay" id="modal-new-invite">
+  <div class="modal" style="max-width:440px;">
+    <div class="modal-header">
+      <span class="modal-title">Generate Invite Code</span>
+      <button class="modal-close" data-close-modal="modal-new-invite">✕</button>
+    </div>
+    <div class="form-group">
+      <label>Note (optional)</label>
+      <input id="ni-note" class="input" placeholder="e.g. For John"/>
+    </div>
+    <div class="form-group">
+      <label>Max Uses <span class="text-muted text-xs">(0 = unlimited)</span></label>
+      <input id="ni-max" class="input" type="number" value="1" min="0"/>
+    </div>
+    <div class="form-group">
+      <label>Custom Code (optional)</label>
+      <input id="ni-custom" class="input" placeholder="Leave blank to auto-generate" style="text-transform:uppercase;" autocomplete="off"/>
+      <div class="text-xs text-muted mt-1">Will be uppercased automatically.</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" data-close-modal="modal-new-invite">Cancel</button>
+      <button class="btn btn-primary" onclick="createInvite()">Generate</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="app.js"></script>
+<script>
+function logout() { DB.del('la_authed'); DB.del('la_role'); DB.del('la_member_id'); window.location.href = 'login.html'; }
+
+function renderInvites() {
+  const invites  = DB.get('la_invites', []);
+  const search   = document.getElementById('inv-search').value.toLowerCase();
+  const filter   = document.getElementById('inv-filter').value;
+  const tbody    = document.getElementById('inv-tbody');
+
+  let rows = invites;
+  if (search) rows = rows.filter(i => i.code.toLowerCase().includes(search) || (i.note||'').toLowerCase().includes(search));
+  if (filter === 'active')   rows = rows.filter(i => i.active);
+  if (filter === 'disabled') rows = rows.filter(i => !i.active);
+
+  /* Stats */
+  document.getElementById('stat-total').textContent    = invites.length;
+  document.getElementById('stat-active').textContent   = invites.filter(i => i.active).length;
+  document.getElementById('stat-uses').textContent     = invites.reduce((s,i) => s + (i.uses||0), 0);
+  document.getElementById('stat-disabled').textContent = invites.filter(i => !i.active).length;
+
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="7" class="text-muted text-sm" style="padding:1.5rem;text-align:center;">No invite codes found.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = rows.map(inv => `
+    <tr>
+      <td>
+        <div class="flex items-center gap-2">
+          <code style="font-size:.78rem;color:#93c5fd;letter-spacing:.04em;">${inv.code}</code>
+          <button class="btn btn-ghost btn-sm btn-icon" onclick="copyText('${inv.code}','Code')" title="Copy">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+        </div>
+      </td>
+      <td class="text-dim text-sm">${inv.note || '<span class="text-muted">—</span>'}</td>
+      <td class="text-sm">${inv.uses || 0}</td>
+      <td class="text-sm">${inv.maxUses === 0 ? '<span class="text-muted">Unlimited</span>' : inv.maxUses}</td>
+      <td>${inv.active ? '<span class="badge badge-green">Active</span>' : '<span class="badge badge-red">Disabled</span>'}</td>
+      <td class="text-dim text-sm">${fmtDateShort(inv.created)}</td>
+      <td>
+        <div class="flex gap-2">
+          <button class="btn btn-ghost btn-sm" onclick="toggleInvite('${inv.id}')">${inv.active ? 'Disable' : 'Enable'}</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteInvite('${inv.id}')">Delete</button>
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+function createInvite() {
+  const note    = document.getElementById('ni-note').value.trim();
+  const maxUses = parseInt(document.getElementById('ni-max').value) || 0;
+  const custom  = document.getElementById('ni-custom').value.trim().toUpperCase();
+
+  const invites = DB.get('la_invites', []);
+
+  /* If custom code provided, check it's not already taken */
+  if (custom) {
+    if (invites.find(i => i.code === custom)) { toast('That code already exists', 'error'); return; }
+  }
+
+  const code = custom || genInviteCode();
+  invites.push({ id: uuidv4(), code, note, maxUses, uses: 0, active: true, created: new Date().toISOString().slice(0,10) });
+  DB.set('la_invites', invites);
+
+  document.getElementById('ni-note').value   = '';
+  document.getElementById('ni-max').value    = '1';
+  document.getElementById('ni-custom').value = '';
+
+  toast(`Invite code ${code} created`, 'success');
+  closeModal('modal-new-invite');
+  renderInvites();
+}
+
+function genInviteCode() {
+  const seg = () => Math.random().toString(36).substring(2,7).toUpperCase();
+  return `INV-${seg()}-${seg()}`;
+}
+
+function toggleInvite(id) {
+  const invites = DB.get('la_invites', []);
+  const idx = invites.findIndex(i => i.id === id);
+  if (idx < 0) return;
+  invites[idx].active = !invites[idx].active;
+  DB.set('la_invites', invites);
+  toast(invites[idx].active ? 'Invite enabled' : 'Invite disabled', 'success');
+  renderInvites();
+}
+
+function deleteInvite(id) {
+  if (!confirm('Delete this invite code?')) return;
+  DB.set('la_invites', DB.get('la_invites', []).filter(i => i.id !== id));
+  toast('Invite code deleted', 'success');
+  renderInvites();
+}
+
+document.addEventListener('DOMContentLoaded', renderInvites);
+</script>
+</body>
+</html>

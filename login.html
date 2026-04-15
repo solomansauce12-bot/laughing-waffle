@@ -47,19 +47,22 @@
 
     <div id="view-register" class="hidden">
       <h2 style="font-size:1.15rem;font-weight:700;margin-bottom:.25rem;">Create account</h2>
-      <p class="text-muted text-sm mb-4">Set up your LarpAuth owner account</p>
+      <p class="text-muted text-sm mb-4">You need an invite code from the owner to register.</p>
 
       <div class="form-group">
-        <label>Owner Name</label>
-        <input id="reg-name" class="input" type="text" placeholder="Admin"/>
+        <label>Invite Code</label>
+        <div class="input-icon-wrap">
+          <svg class="icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+          <input id="reg-invite" class="input" type="text" placeholder="LARP-XXXXX-XXXXX" style="text-transform:uppercase;" autocomplete="off"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Username</label>
+        <input id="reg-user" class="input" type="text" placeholder="username"/>
       </div>
       <div class="form-group">
         <label>Email</label>
         <input id="reg-email" class="input" type="email" placeholder="you@example.com"/>
-      </div>
-      <div class="form-group">
-        <label>Username</label>
-        <input id="reg-user" class="input" type="text" placeholder="admin"/>
       </div>
       <div class="form-group">
         <label>Password</label>
@@ -88,14 +91,24 @@ function doLogin() {
   const u = document.getElementById('login-user').value.trim();
   const p = document.getElementById('login-pass').value;
   if (!u || !p) { toast('Please fill in all fields', 'error'); return; }
-  const saved = DB.get('la_account');
-  if (saved && (saved.username === u || saved.email === u) && saved.password === p) {
+
+  /* Owner login */
+  if (u === OWNER.username && p === OWNER.password) {
     DB.set('la_authed', true);
-    toast('Welcome back!', 'success');
+    DB.set('la_role', 'owner');
+    toast('Welcome back, ' + OWNER.username + '!', 'success');
     setTimeout(() => window.location.href = 'dashboard.html', 600);
-  } else if (!saved && (u === 'admin' || u === 'admin@larpauth.io') && p === 'admin') {
+    return;
+  }
+
+  /* Regular member login */
+  const members = DB.get('la_members', []);
+  const member  = members.find(m => (m.username === u || m.email === u) && m.password === p);
+  if (member) {
     DB.set('la_authed', true);
-    toast('Welcome back!', 'success');
+    DB.set('la_role', 'member');
+    DB.set('la_member_id', member.id);
+    toast('Welcome back, ' + member.username + '!', 'success');
     setTimeout(() => window.location.href = 'dashboard.html', 600);
   } else {
     toast('Invalid credentials', 'error');
@@ -103,15 +116,33 @@ function doLogin() {
 }
 
 function doRegister() {
-  const name  = document.getElementById('reg-name').value.trim();
-  const email = document.getElementById('reg-email').value.trim();
-  const user  = document.getElementById('reg-user').value.trim();
-  const pass  = document.getElementById('reg-pass').value;
-  if (!name || !email || !user || !pass) { toast('Please fill in all fields', 'error'); return; }
-  DB.set('la_account', { ownerName: name, email, username: user, password: pass });
-  const s = DB.get('la_settings') || {};
-  DB.set('la_settings', { ...s, ownerName: name, email });
+  const inviteCode = document.getElementById('reg-invite').value.trim();
+  const user       = document.getElementById('reg-user').value.trim();
+  const email      = document.getElementById('reg-email').value.trim();
+  const pass       = document.getElementById('reg-pass').value;
+  if (!inviteCode || !user || !email || !pass) { toast('Please fill in all fields', 'error'); return; }
+
+  /* Validate invite */
+  const check = validateInvite(inviteCode);
+  if (!check.ok) { toast(check.msg, 'error'); return; }
+
+  /* Check username not taken */
+  const members = DB.get('la_members', []);
+  if (user === OWNER.username) { toast('That username is not available', 'error'); return; }
+  if (members.find(m => m.username.toLowerCase() === user.toLowerCase())) { toast('Username already taken', 'error'); return; }
+  if (members.find(m => m.email.toLowerCase() === email.toLowerCase())) { toast('Email already registered', 'error'); return; }
+
+  /* Create member */
+  const newMember = { id: uuidv4(), username: user, email, password: pass, created: new Date().toISOString() };
+  members.push(newMember);
+  DB.set('la_members', members);
+
+  /* Redeem invite */
+  redeemInvite(inviteCode);
+
   DB.set('la_authed', true);
+  DB.set('la_role', 'member');
+  DB.set('la_member_id', newMember.id);
   toast('Account created!', 'success');
   setTimeout(() => window.location.href = 'dashboard.html', 600);
 }
