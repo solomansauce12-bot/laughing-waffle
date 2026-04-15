@@ -93,5 +93,5 @@
     <ClInclude Include="auth.hpp" />
     <ClInclude Include="skStr.h" />
   </ItemGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.CppTargets.targets" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>
