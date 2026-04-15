@@ -24,7 +24,7 @@ std::string app_secret = skCrypt("d8da8a11-3c72-4792-a9d1-fe0d3c9c0739").decrypt
 std::string app_ver    = skCrypt("1.0").decrypt();
 
 /* ── Paste your Cloudflare Worker URL here ── */
-std::string worker_url = skCrypt("https://YOUR-WORKER.workers.dev").decrypt();
+std::string worker_url = skCrypt("https://diddy.retiredwithonefig.workers.dev").decrypt();
 
 api LarpAuthApp(app_name, owner_id, app_secret, app_ver, worker_url);
 lockout_state login_guard{};

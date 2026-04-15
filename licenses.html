@@ -264,12 +264,17 @@ function renderLicenses() {
     </tr>`).join('');
 }
 
+function getSelectedApp() {
+  return (DB.get('la_apps', [])).find(a => a.id === selectedAppId);
+}
+
 function createLicense() {
   if (!selectedAppId) { toast('Select an application first', 'error'); return; }
   const level  = parseInt(document.getElementById('nl-level').value);
   const days   = parseInt(document.getElementById('nl-days').value) || 365;
   const prefix = document.getElementById('nl-prefix').value.trim() || 'LARP';
   const exp    = new Date(Date.now() + days * 864e5).toISOString().slice(0,10);
+  const expiry = Math.floor(new Date(exp).getTime() / 1000);
   const licenses = DB.get('la_licenses', []);
   const newKey = { id: uuidv4(), key: genLicenseKey(prefix), appId: selectedAppId, level, used: false, username: '', ip: '', created: new Date().toISOString().slice(0,10), expires: exp };
   licenses.push(newKey);
@@ -277,6 +282,9 @@ function createLicense() {
   toast('License key generated', 'success');
   closeModal('modal-new-license');
   renderLicenses();
+  /* Sync to Worker */
+  const app = getSelectedApp();
+  if (app) workerSync({ type: 'push_license', name: app.name, secret: app.secret, key: newKey.key, maxUses: 1, note: '', expiry });
 }
 
 function bulkGenerate() {
@@ -285,12 +293,15 @@ function bulkGenerate() {
   const level  = parseInt(document.getElementById('bulk-level').value);
   const days   = parseInt(document.getElementById('bulk-days').value) || 365;
   const exp    = new Date(Date.now() + days * 864e5).toISOString().slice(0,10);
+  const expiry = Math.floor(new Date(exp).getTime() / 1000);
   const licenses = DB.get('la_licenses', []);
   const keys = [];
+  const app = getSelectedApp();
   for (let i = 0; i < count; i++) {
     const k = genLicenseKey('LARP');
     keys.push(k);
     licenses.push({ id: uuidv4(), key: k, appId: selectedAppId, level, used: false, username: '', ip: '', created: new Date().toISOString().slice(0,10), expires: exp });
+    if (app) workerSync({ type: 'push_license', name: app.name, secret: app.secret, key: k, maxUses: 1, note: '', expiry });
   }
   DB.set('la_licenses', licenses);
   document.getElementById('bulk-output').value = keys.join('\n');
@@ -311,7 +322,14 @@ function resetLicense(id) {
 
 function deleteLicense(id) {
   if (!confirm('Delete this license key?')) return;
-  DB.set('la_licenses', DB.get('la_licenses', []).filter(l => l.id !== id));
+  const licenses = DB.get('la_licenses', []);
+  const lic = licenses.find(l => l.id === id);
+  DB.set('la_licenses', licenses.filter(l => l.id !== id));
+  /* Revoke on Worker */
+  if (lic) {
+    const app = (DB.get('la_apps', [])).find(a => a.id === lic.appId);
+    if (app) workerSync({ type: 'revoke_license', name: app.name, secret: app.secret, key: lic.key });
+  }
   toast('License deleted', 'success');
   renderLicenses();
 }
